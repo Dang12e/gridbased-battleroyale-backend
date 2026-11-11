@@ -1,11 +1,15 @@
-export abstract class Command{
-   readonly id: number;
+import { Client } from "colyseus";
+import { MyRoomState } from "../rooms/schema/MyRoomState.js";
+import { GameMap } from "../objects/GameMap.js";
 
-   constructor(id:number)
+export abstract class Command<TPayload=any>{
+   readonly id: string;
+
+   constructor(id:string)
    {
     this.id=id;
    }
-   public exacute(param: any)
+   public execute(roomstate: MyRoomState,client:Client ,payload: TPayload,map:GameMap)
    {
 
    }

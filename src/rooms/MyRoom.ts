@@ -5,9 +5,8 @@ import { GameMap } from "../objects/GameMap.js";
 import { MapSchema, StateView } from "@colyseus/schema";
 import { ItemState } from "./schema/ItemState.js";
 import { PlayerState } from "./schema/PlayerState.js";
-import { Command } from "../commands/Command.js";
-import { PlayerCommand } from "../commands/afafaf.js";
-import { CommandRegistery } from "../commands/CommandRegistery.js";
+import { GameCommandQueue } from "../objects/GameCommandQueue.js";
+import { Movepayload } from "../commands/MoveCommand.js";
 
 export class MyRoom extends Room<{ state: MyRoomState }> {
   maxClients = 4;
@@ -15,21 +14,22 @@ export class MyRoom extends Room<{ state: MyRoomState }> {
    droppedItems: new MapSchema<ItemState>(),
    players: new MapSchema<PlayerState>()
   });
-  private playerCommandQueues: Map<string,PlayerCommand[]>=new Map();
-  players= new Map<string,Player>();
+  private clientsMap: Map<string,Client>=new Map();
+
+
+  private gamecommandsQueue: GameCommandQueue=new GameCommandQueue();
+
+
+
+
   map=new GameMap(20,20);
   
 
   messages = {
     
    "move": (client:Client, message: { dx: number, dy: number }) => {
-            if (!this.playerCommandQueues.has(client.sessionId)) {
-        this.playerCommandQueues.set(client.sessionId, []);
-      }
-      
-      
-      this.playerCommandQueues.get(client.sessionId)!.push(PlayerCommand.MOVE);
-            
+            this.gamecommandsQueue.pushCommand(client.sessionId,"move",new Movepayload(message.dx,message.dy));
+            client.send("move_command_queued");
         }
     
   };
@@ -46,25 +46,16 @@ export class MyRoom extends Room<{ state: MyRoomState }> {
   }
 
   update(){
-         this.playerCommandQueues.forEach((v,k)=>
-        {
-           const queue = this.playerCommandQueues.get(k);
-
-      // Nếu hàng đợi tồn tại và có lệnh đang chờ
-      if (queue && queue.length > 0) {
-        // RÚT RA 1 LỆNH DUY NHẤT (Lệnh đầu tiên xếp hàng - FIFO)
-        const currentCommand = queue.shift(); 
-
-        // Thực hiện lệnh
-        CommandRegistery.exacuteCommand(currentCommand,this.state.players.get(k));
-      }
-        });
+        this.executeCommand();
+      
   }
 
   onJoin(client: Client, options: any) {
     console.log(`Client kết nối: ${client.sessionId}`);
+    this.clientsMap.set(client.sessionId,client);
    const player= new PlayerState();
    player.sessionId=client.sessionId;
+
     this.state.players.set(client.sessionId,player);
     client.view=new StateView();
     client.view.add(player);
@@ -81,6 +72,18 @@ export class MyRoom extends Room<{ state: MyRoomState }> {
      * Called when the room is disposed.
      */
     console.log("room", this.roomId, "disposing...");
+  }
+
+  executeCommand()
+  {
+    console.log("executecommands queue");
+      this.gamecommandsQueue.executeCommands(this.state,this.map,this.clientsMap);
+      
+  }
+
+  public findClientByID(sessionID: string):Client
+  {
+    return this.clients.find(client=>{client.sessionId==sessionID});
   }
 
 }
