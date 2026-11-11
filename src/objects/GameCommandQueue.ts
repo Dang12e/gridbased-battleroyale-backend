@@ -26,7 +26,7 @@ export class GameCommandQueue
             const client = clientsMap.get(key);
             if(client)
             {
-                console.log("found client")
+        
             const tcommands=command as (TempCommand<TPayload>[]);
             const tcommand=tcommands.shift();
             if(tcommand)
