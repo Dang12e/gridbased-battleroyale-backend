@@ -1,16 +1,24 @@
+import { Client } from "colyseus";
+import { MyRoomState } from "../rooms/schema/MyRoomState.js";
 import { Command } from "./Command.js";
 
-export class MoveCommand extends Command
+export class MoveCommand extends Command<Movepayload>
 {
-    constructor(id:number)
+    constructor(id:string)
     {
         super(id);
     }
-  public override exacute(param: any): void {
-      const c_x= param.x++;
-      const c_y= param.y++;
-      console.log("player moved!");
-
-
+  public override execute(roomstate: MyRoomState, client:Client, payload: Movepayload): void {
+      const player=roomstate.players.get(client.sessionId);
+      player.x=payload.x;
+      player.y=payload.y;
+      client.send("move")
+    
   }
+}
+export class Movepayload{
+   constructor(public x:number,public y:number)
+   {
+
+   }
 }
