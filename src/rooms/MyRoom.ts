@@ -76,7 +76,6 @@ export class MyRoom extends Room<{ state: MyRoomState }> {
 
   executeCommand()
   {
-    console.log("executecommands queue");
       this.gamecommandsQueue.executeCommands(this.state,this.map,this.clientsMap);
       
   }
