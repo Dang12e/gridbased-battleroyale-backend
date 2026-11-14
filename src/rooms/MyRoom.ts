@@ -7,8 +7,11 @@ import { ItemState } from "./schema/ItemState.js";
 import { PlayerState } from "./schema/PlayerState.js";
 import { GameCommandQueue } from "../objects/GameCommandQueue.js";
 import { Movepayload } from "../commands/MoveCommand.js";
+import { Target } from "../commands/AttackCommand.js";
+import { UniqueIdGenerator } from "../helpers/UniqueIdGenerator.js";
 
 export class MyRoom extends Room<{ state: MyRoomState }> {
+  testitemid:number;
   maxClients = 4;
   state = new MyRoomState({
    droppedItems: new MapSchema<ItemState>(),
@@ -26,10 +29,24 @@ export class MyRoom extends Room<{ state: MyRoomState }> {
   
 
   messages = {
+    //thêm lệnh tại đây
     
    "move": (client:Client, message: { dx: number, dy: number }) => {
             this.gamecommandsQueue.pushCommand(client.sessionId,"move",new Movepayload(message.dx,message.dy));
             client.send("move_command_queued");
+        },
+    "attack": (client:Client, message: { dx: number, dy: number }) => {
+            this.gamecommandsQueue.pushCommand(client.sessionId,"attack",new Target(message.dx,message.dy));
+            client.send("attack_command_queued");
+        },
+
+    "useItem": (client:Client, message: { index: number}) => {
+            this.gamecommandsQueue.pushCommand(client.sessionId,"useItem",message.index);
+            client.send("useItem_command_queued");
+        },
+    "equipGear": (client:Client, message: { itemid: string}) => {
+            this.gamecommandsQueue.pushCommand(client.sessionId,"equipGear",message.itemid);
+            client.send("equipGear_command_queued");
         }
     
   };
@@ -41,6 +58,8 @@ export class MyRoom extends Room<{ state: MyRoomState }> {
     this.clock.setInterval(() => {
       this.update();
     }, 200);
+    this.state.droppedItems.set("1",new ItemState({itemId:"1",itemTypeId:"kelvet",category:"gear",durability:10,x:0,y:0}))
+    
     
     
   }

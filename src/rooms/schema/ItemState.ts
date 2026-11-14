@@ -4,6 +4,7 @@ export const ItemState = schema({
 
   itemId:t.string(),
   itemTypeId:t.string(),
+  category:t.string(),
   durability:t.number(),
   
   x:t.number(),
