@@ -30,7 +30,7 @@ export class GameCommandQueue
             const tcommands=command as (TempCommand<TPayload>[]);
             const tcommand=tcommands.shift();
             if(tcommand)
-            CommandRegistery.exacuteCommand(tcommand.command_id,roomstate,client,tcommand.payload,map);
+            CommandRegistery.exacuteCommand(tcommand.command_id,roomstate,client,tcommand.payload,map,clientsMap);
             else
             this.commandQueues.delete(key);
             }

@@ -24,7 +24,6 @@ export class Gear extends BaseItemLogic{
     }
     public onDrop(playerstate: PlayerState, roomstate: MyRoomState,index:InventoryEnum): void {
        this.drop(index,playerstate,roomstate);
-       this.drop(index,playerstate,roomstate);
        this.unsubEvent(playerstate.durabilityLossEvents);
        this.unsubModifiers(playerstate);
     }
