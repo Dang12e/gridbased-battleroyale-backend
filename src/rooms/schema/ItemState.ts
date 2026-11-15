@@ -11,3 +11,12 @@ export const ItemState = schema({
   y:t.number()
 });
 export type ItemState = SchemaType<typeof ItemState>;
+
+export const nullItemState=new ItemState({
+  itemId:"none",
+  itemTypeId:"none",
+  category:"none",
+  durability:0,
+  x:-12,
+  y:-22,
+});

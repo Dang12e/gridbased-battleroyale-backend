@@ -4,9 +4,7 @@ export enum InventoryEnum{
     item1=2,
     item2=3,
     item3=4,
-    item4=5,
-    item5=6,
-    maxValue=6,
-    length=7
+    maxValue=4,
+    length=5
     
 }
