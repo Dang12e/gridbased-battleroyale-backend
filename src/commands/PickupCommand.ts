@@ -1,26 +1,28 @@
 import { Client } from "colyseus";
-import { GameMap } from "../objects/GameMap.js";
-import { MyRoomState } from "../rooms/schema/MyRoomState.js";
 import { Command } from "./Command.js";
 import { InventoryEnum } from "../Enums/InventoryEnum.js";
 import { ItemLogicRegistery } from "../items/ItemLogicRegistery.js";
 
+import { BlackBoard } from "../roomdata/BlackBoard.js";
+
 export class PickupCommand extends Command<PickupPayload>
 {
-    public execute(roomstate: MyRoomState, client: Client, payload: PickupPayload, map: GameMap, clientMap: Map<string, Client>): void {
+    public execute(client: Client, blackBoard: BlackBoard, payload: PickupPayload): void {
+        
         if(payload.index>Number(InventoryEnum.maxValue) && payload.index<=Number(InventoryEnum.gear))
         {
             client.send("invalid inventory index");
         }
-        const player=roomstate.players.get(client.sessionId);
-        const droppedItems=roomstate.droppedItems;
+        const player=blackBoard.players.get(client.sessionId);
+        const playerdata=blackBoard.playersdata.get(client.sessionId);
+        const droppedItems=blackBoard.droppedItems;
         const item=droppedItems.get(payload.itemId);
-        if(item && item.category=="consumable" && (item.x==player.x&&item.y==player.y))
+        if(item && item.category=="consummable" && (item.x==player.x&&item.y==player.y))
         {
-            const inventory=player.inventory;
+            const inventory=playerdata.getInventory();
             const drop=inventory[payload.index];
-            if(drop&& drop.itemTypeId!="none") ItemLogicRegistery.getItemLogic(drop.itemTypeId).onDrop(player,roomstate,payload.index);
-            ItemLogicRegistery.getItemLogic(item.itemTypeId).onEquip(player,roomstate,payload.index,item);
+            if(drop&&drop.itemId&& drop.itemTypeId!="none") ItemLogicRegistery.getItemLogic(drop.itemTypeId).onDrop(playerdata,blackBoard,payload.index);
+            ItemLogicRegistery.getItemLogic(item.itemTypeId).onEquip(playerdata,blackBoard,payload.index,item);
 
         }
         else{
@@ -29,6 +31,7 @@ export class PickupCommand extends Command<PickupPayload>
         
         
     }
+    
     
 }
 export class PickupPayload

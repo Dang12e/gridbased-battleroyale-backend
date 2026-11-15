@@ -1,6 +1,8 @@
 import { Client } from "colyseus";
 import { MyRoomState } from "../rooms/schema/MyRoomState.js";
-import { GameMap } from "../objects/GameMap.js";
+import { GameMap } from "../roomdata/GameMap.js";
+import { Playerdata } from "../roomdata/Playerdata.js";
+import { BlackBoard } from "../roomdata/BlackBoard.js";
 
 
 
@@ -11,7 +13,11 @@ export abstract class Command<TPayload=any>{
    {
     this.id=id;
    }
-   public abstract execute(roomstate: MyRoomState,client:Client ,payload: TPayload,map:GameMap,clientMap:Map<string,Client>):void;
+   public abstract execute(
+      client:Client,
+      blackBoard:BlackBoard,
+      payload:TPayload
+      ):void;
    
   
 }

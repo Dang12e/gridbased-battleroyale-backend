@@ -3,6 +3,7 @@ import { CommandRegistery } from "../commands/CommandRegistery.js";
 import { MyRoom } from "../rooms/MyRoom.js";
 import { MyRoomState } from "../rooms/schema/MyRoomState.js";
 import { GameMap } from "./GameMap.js";
+import { BlackBoard } from "./BlackBoard.js";
 
 export class GameCommandQueue
 {
@@ -19,18 +20,18 @@ export class GameCommandQueue
         }
     }
 
-    public executeCommands<TPayload=any>(roomstate:MyRoomState,map:GameMap,clientsMap:Map<string,Client>)
+    public executeCommands<TPayload=any>(blackBoard:BlackBoard)
     {
         
          this.commandQueues.forEach((command,key) => {
-            const client = clientsMap.get(key);
+            const client = blackBoard.clientMap.get(key);
             if(client)
             {
         
             const tcommands=command as (TempCommand<TPayload>[]);
             const tcommand=tcommands.shift();
             if(tcommand)
-            CommandRegistery.exacuteCommand(tcommand.command_id,roomstate,client,tcommand.payload,map,clientsMap);
+            CommandRegistery.exacuteCommand(tcommand.command_id,client,blackBoard,tcommand.payload);
             else
             this.commandQueues.delete(key);
             }
