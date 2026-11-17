@@ -75,6 +75,7 @@ export class Player {
 
     public instantiate(players: MapSchema<PlayerState>) {
         players.set(this.id, this.playerstate);
+        this.playerstate.sessionId=this.id;
     }
 }
 

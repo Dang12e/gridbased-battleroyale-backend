@@ -11,7 +11,8 @@ import { Target } from "../commands/AttackCommand.js";
 import { PickupPayload } from "../commands/PickupCommand.js";
 import { GlobalMessages } from "./schema/Messageschema.js";
 import { BlackBoard } from "../roomdata/BlackBoard.js";
-
+import { ItemDropper, ItemRequirement } from "../objects/ItemsDropper.js";
+type MessageHandler = (client: Client, data: any) => void;
 export class MyRoom extends Room<{ state: MyRoomState }> {
   testitemid:number;
   maxClients = 4;
@@ -19,6 +20,7 @@ export class MyRoom extends Room<{ state: MyRoomState }> {
    droppedItems: new MapSchema<ItemState>(),
    players: new MapSchema<PlayerState>()
   });
+  
   
   private blackBoard: BlackBoard;
 
@@ -76,11 +78,13 @@ export class MyRoom extends Room<{ state: MyRoomState }> {
     this.clock.setInterval(() => {
       this.update();
     }, 200);
-    this.state.droppedItems.set("1",new ItemState({itemId:"1",itemTypeId:"kelvet",category:"gear",durability:10,x:0,y:0}))
-    this.state.droppedItems.set("2",new ItemState({itemId:"2",itemTypeId:"AK36",category:"weapon",durability:30,x:0,y:0}))
-    this.state.droppedItems.set("3",new ItemState({itemId:"3",itemTypeId:"Medkit",category:"consummable",durability:10,x:0,y:0}))
-    this.state.droppedItems.set("4",new ItemState({itemId:"4",itemTypeId:"kelvet",category:"gear",durability:10,x:1,y:0}))
-    
+    const itemRequirements:ItemRequirement[]=[
+      {type:"Kelvet",quantity:10
+    },{type:"AK36",quantity:10},
+  {type:"Medkit",quantity:10}];
+
+  ItemDropper.dropItems(this.map,itemRequirements,this.state.droppedItems);
+ 
     
     
   }
@@ -97,6 +101,10 @@ export class MyRoom extends Room<{ state: MyRoomState }> {
     playerdata.instantiate(this.blackBoard.players);
     this.blackBoard.playersdata.set(playerdata.getId(),playerdata);
     client.send("welcome", { message: "Chào mừng bạn vào game!", sessionId: playerdata.getId() });
+    if(this.clients.length>=this.maxClients)
+    {
+        this.ActivateGamePhase();
+    }
     
   }
 
@@ -122,5 +130,11 @@ export class MyRoom extends Room<{ state: MyRoomState }> {
   {
     return this.clients.find(client=>{client.sessionId==sessionID});
   }
+  private ActivateGamePhase()
+  {
+
+  }
 
 }
+
+

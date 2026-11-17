@@ -20,8 +20,10 @@ export class AK36 extends BaseItemLogic<Target> implements IWeapon
      
     }
     public use(client: Client, blackBoard: BlackBoard, payload: Target): void {
+        console.log(`target ${payload.x}, ${payload.y}`);
         const target = payload;
         const cell = blackBoard.map.getCell(target.x, target.y);
+        console.log("attack "+cell+" at id: "+ cell.player_id);
         if(cell.player_id)
         {
             const player=blackBoard.players.get(cell.player_id);
