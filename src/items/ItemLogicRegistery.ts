@@ -8,7 +8,7 @@ import { Medkit } from "./Medkit.js";
 export class ItemLogicRegistery{
     private static itemLogics:Map<string,BaseItemLogic<any>>=new Map<string,BaseItemLogic<any>>([
         //Khai báo logic Item tại đây
-        ["kelvet",new Gear([new GearStat(StatsEnum.maxHp,0.25)],"kelvet",1,20,DLEventEnum.onHit,"gear")],
+        ["Kelvet",new Gear([new GearStat(StatsEnum.maxHp,0.25)],"Kelvet",1,20,DLEventEnum.onHit,"gear")],
         ["AK36",new AK36("AK36",2,30,DLEventEnum.attack,"weapon",3,true,30,2)],
         ["Medkit",new Medkit(25,"Medkit",1,10,DLEventEnum.none,"consummable")]
 

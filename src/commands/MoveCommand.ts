@@ -27,8 +27,8 @@ export class MoveCommand extends Command<Movepayload>
           return;
         }
 
-        let cellplayerid=map.getCell(payload.x,payload.y).player_id;
-        if(cellplayerid)
+        const targetCell=map.getCell(payload.x,payload.y);
+        if(targetCell.player_id)
         {
           client.send("movement invalid");
           return
@@ -37,9 +37,10 @@ export class MoveCommand extends Command<Movepayload>
         curCell.player_id=null;
         player.x=payload.x;
         player.y=payload.y;
-        cellplayerid=player.sessionId;
+        targetCell.player_id=player.sessionId;
+  
+  
         DurabilityHandler.handleDurability(DLEventEnum.move,playerdata);
-        console.log("move: "+player.x+" ,"+player.y)
       }
       else
       {
