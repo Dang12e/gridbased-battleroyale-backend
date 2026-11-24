@@ -12,7 +12,7 @@ export class BlackBoard
     constructor(
     public players:MapSchema<PlayerState>,
     public droppedItems:MapSchema<ItemState>,
-    public map:GameMap=new GameMap(20,20),
+    public map:GameMap=new GameMap(90,90),
     public playersdata:Map<string,Player>=new Map<string,Player>(),
     public clientMap:Map<string,Client>=new Map<string,Client>(),)
     {

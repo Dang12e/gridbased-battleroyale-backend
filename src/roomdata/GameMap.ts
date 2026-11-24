@@ -21,8 +21,9 @@ export class GameMap {
 
     // Lấy thông tin ô an toàn (có kiểm tra biên bản đồ)
     public getCell(x: number, y: number): Cell | null {
-        
+        console.log(`get cell x: ${x} y:${y}`);
         if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
+            console.log(x+" "+y+" "+ this.width+" "+this.height);
             return null;
         }
         return this.grid[y][x];
