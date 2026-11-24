@@ -13,7 +13,8 @@
     "loadtest": "tsx loadtest/example.ts --room my_room --numClients 2",
     "build": "npm run clean && tsc -p tsconfig.build.json",
     "clean": "rimraf build",
-    "test": "mocha -r tsx test/**.test.ts --exit --timeout 15000"
+    "test": "mocha -r tsx test/**.test.ts --exit --timeout 15000",
+    "codegen": "node -e \"const fs=require('fs'),path=require('path'); const src='src/rooms/schema', dst='../../BattleRoyalePront/src/schemas'; fs.mkdirSync(dst,{recursive:true}); for(const f of fs.readdirSync(src)) if(f.endsWith('.ts')) fs.copyFileSync(path.join(src,f), path.join(dst,f));\""
   },
   "author": "",
   "license": "UNLICENSED",
