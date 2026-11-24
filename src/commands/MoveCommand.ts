@@ -13,6 +13,7 @@ import { BlackBoard } from "../roomdata/BlackBoard.js";
 export class MoveCommand extends Command<Movepayload>
 {
     public execute(client: Client, blackBoard: BlackBoard, payload: Movepayload): void {
+      console.log(`target: x:${payload.x} y:${payload.y}`);
       const map=blackBoard.map;
        const playerdata=blackBoard.playersdata.get(client.sessionId)
        const player=playerdata.getPlayerState();
@@ -28,7 +29,8 @@ export class MoveCommand extends Command<Movepayload>
         }
 
         const targetCell=map.getCell(payload.x,payload.y);
-        if(targetCell.player_id)
+        
+        if(!targetCell||targetCell.player_id)
         {
           client.send("movement invalid");
           return
@@ -44,6 +46,7 @@ export class MoveCommand extends Command<Movepayload>
       }
       else
       {
+        console.log('here');
         client.send("movement invalid");
       }
     }
