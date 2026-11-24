@@ -30,7 +30,7 @@ export class MyRoom extends Room<{ state: MyRoomState }> {
 
 
 
-  map=new GameMap(20,20);
+
   
 
   messages = {
@@ -82,8 +82,8 @@ export class MyRoom extends Room<{ state: MyRoomState }> {
       {type:"Kelvet",quantity:10
     },{type:"AK36",quantity:10},
   {type:"Medkit",quantity:10}];
-
-  ItemDropper.dropItems(this.map,itemRequirements,this.state.droppedItems);
+  
+  ItemDropper.dropItems(this.blackBoard.map,itemRequirements,this.state.droppedItems);
  
     
     
@@ -99,6 +99,9 @@ export class MyRoom extends Room<{ state: MyRoomState }> {
     this.blackBoard.clientMap.set(client.sessionId,client);
     const playerdata=new Player(client,client.sessionId,0);
     playerdata.instantiate(this.blackBoard.players);
+    playerdata.playerstate.x=Math.floor(Math.random()*this.blackBoard.map.width);
+    playerdata.playerstate.x=Math.floor(Math.random()*this.blackBoard.map.height);
+    console.log(this.blackBoard.map.height);
     this.blackBoard.playersdata.set(playerdata.getId(),playerdata);
     client.send("welcome", { message: "Chào mừng bạn vào game!", sessionId: playerdata.getId() });
     if(this.clients.length>=this.maxClients)

@@ -25,14 +25,16 @@ export class MoveCommand extends Command<Movepayload>
           payload.y<0
         ){
           client.send("movement invalid");
+          console.log("1");
           return;
         }
 
         const targetCell=map.getCell(payload.x,payload.y);
-        
+        console.log(targetCell);
         if(!targetCell||targetCell.player_id)
         {
           client.send("movement invalid");
+          console.log("2");
           return
         }
         const curCell=map.getCell(player.x,player.y);
